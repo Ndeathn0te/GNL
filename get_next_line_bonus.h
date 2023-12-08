@@ -1,29 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/06 12:47:25 by armgonza          #+#    #+#             */
+/*   Updated: 2023/12/06 12:47:30 by armgonza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10 
+#  define BUFFER_SIZE 10
 # endif
 
 # include <fcntl.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdio.h>
 
 typedef struct s_list
 {
 	char			*str_buf;
 	struct s_list	*next;
-}				t_list;
+}					t_list;
 
-int		found_newline(t_list *list);
-t_list	*find_last_node(t_list *list);
-char	*get_theline(t_list *list);
-void	copy_str(t_list *list, char *str);
-int		len_to_newline(t_list *list);
-void	polish_list(t_list **list);
-char	*get_next_line(int fd);
-void	dealloc(t_list **list, t_list *clean_node, char *buf);
-void	create_list(t_list **list, int fd);
+int					found_newline(t_list *list);
+t_list				*find_last_node(t_list *list);
+char				*get_theline(t_list *list);
+void				copy_str(t_list *list, char *str);
+int					len_to_newline(t_list *list);
+void				polish_list(t_list **list);
+char				*get_next_line(int fd);
+void				dealloc(t_list **list, t_list *clean_node, char *buf);
+void				create_list(t_list **list, int fd);
 
 #endif

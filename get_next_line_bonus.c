@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/06 12:46:50 by armgonza          #+#    #+#             */
+/*   Updated: 2023/12/06 17:13:35 by armgonza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 
 /*
@@ -13,17 +25,15 @@ void	polish_list(t_list **list)
 
 	buf = malloc(BUFFER_SIZE + 1);
 	clean_node = malloc(sizeof(t_list));
-	if (!buf || !clean_node)
-	{
-		free(buf);        // Free buf if clean_node allocation fails
-		free(clean_node); // Free clean_node if buf allocation fails
+	if (NULL == buf || NULL == clean_node)
 		return ;
-	}
 	last_node = find_last_node(*list);
-	for (i = 0; last_node->str_buf[i] && last_node->str_buf[i] != '\n'; i++)
-		;
-	for (k = 0; last_node->str_buf[i]; buf[k++] = last_node->str_buf[++i])
-		;
+	i = 0;
+	k = 0;
+	while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
+		++i;
+	while (last_node->str_buf[i] && last_node->str_buf[++i])
+		buf[k++] = last_node->str_buf[i];
 	buf[k] = '\0';
 	clean_node->str_buf = buf;
 	clean_node->next = NULL;
@@ -59,7 +69,7 @@ void	append(t_list **list, char *buf)
 	new_node = malloc(sizeof(t_list));
 	if (!new_node)
 	{
-		free(buf); // Free buf if new_node allocation fails
+		free(buf);
 		return ;
 	}
 	last_node = find_last_node(*list);
@@ -84,7 +94,7 @@ void	create_list(t_list **list, int fd)
 		char_read = read(fd, buf, BUFFER_SIZE);
 		if (char_read <= 0)
 		{
-			free(buf); // libera buf si read falla o EOF
+			free(buf);
 			return ;
 		}
 		buf[char_read] = '\0';

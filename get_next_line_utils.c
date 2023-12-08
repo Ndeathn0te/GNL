@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/06 12:48:10 by armgonza          #+#    #+#             */
+/*   Updated: 2023/12/06 12:48:12 by armgonza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 #include <stdlib.h> // For free
 
@@ -33,7 +45,10 @@ t_list	*find_last_node(t_list *list)
 /*Copy characters from the list up to the newline character*/
 void	copy_str(t_list *list, char *str)
 {
-	int i, k = 0;
+	int	i;
+	int	k;
+
+	k = 0;
 	while (list)
 	{
 		i = 0;
@@ -57,7 +72,10 @@ void	copy_str(t_list *list, char *str)
 /*Calculate the length of the string in the list up to the newline character*/
 int	len_to_newline(t_list *list)
 {
-	int i, len = 0;
+	int	i;
+	int	len;
+
+	len = 0;
 	while (list)
 	{
 		i = 0;
