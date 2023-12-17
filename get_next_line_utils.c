@@ -6,110 +6,84 @@
 /*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 12:48:10 by armgonza          #+#    #+#             */
-/*   Updated: 2023/12/06 12:48:12 by armgonza         ###   ########.fr       */
+/*   Updated: 2023/12/17 14:30:07 by armgonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
-#include <stdlib.h> // For free
+#include "get_next_line.h"
 
-/*Check if there is a newline character in the list*/
-int	found_newline(t_list *list)
+//	fills 'n' bytes of a memory area 's'
+//	with null characters.
+
+void	ft_bzero(void *s, size_t n)
 {
-	int	i;
+	size_t	i;
 
-	while (list)
+	i = 0;
+	while (i < n)
 	{
-		i = 0;
-		while (list->str_buf[i] && i < BUFFER_SIZE)
-		{
-			if (list->str_buf[i] == '\n')
-				return (1);
-			i++;
-		}
-		list = list->next;
+		*((unsigned char *)s + i) = '\0';
+		i++;
 	}
-	return (0);
 }
 
-/* Find the last node in the list*/
-t_list	*find_last_node(t_list *list)
+//	Calculates the lenght of a string 'str'
+
+size_t	ft_strlen(const char *str)
 {
-	if (!list)
+	size_t	i;
+
+	if (str == NULL)
+		return (0);
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
+}
+
+//	Function that searches for a character 'c'
+//	in a string 's' and returns a pointer to
+//	that character
+
+char	*ft_strchr(const char *s, int c)
+{
+	if (s == NULL)
 		return (NULL);
-	while (list->next)
-		list = list->next;
-	return (list);
+	while (*s != '\0')
+	{
+		if (*s == c)
+			return ((char *)s);
+		s++;
+	}
+	if (*s == '\0' && c == '\0')
+		return ((char *)s);
+	return (NULL);
 }
 
-/*Copy characters from the list up to the newline character*/
-void	copy_str(t_list *list, char *str)
+//	Function that takes 2 strings, 's1' and 's2',
+//	and joins them together in a new string 'str'
+
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	int	i;
-	int	k;
+	char	*str;
+	size_t	len;
+	size_t	i;
 
-	k = 0;
-	while (list)
+	len = ft_strlen(s1) + ft_strlen(s2) + 1;
+	str = (char *)malloc(len * sizeof(char));
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (s1 && *s1)
 	{
-		i = 0;
-		while (list->str_buf[i])
-		{
-			str[k++] = list->str_buf[i];
-			if (list->str_buf[i] == '\n')
-				break ;
-			i++;
-		}
-		if (list->str_buf[i] == '\n')
-		{
-			str[k] = '\0';
-			return ;
-		}
-		list = list->next;
+		str[i++] = *s1;
+		s1++;
 	}
-	str[k] = '\0';
-}
-
-/*Calculate the length of the string in the list up to the newline character*/
-int	len_to_newline(t_list *list)
-{
-	int	i;
-	int	len;
-
-	len = 0;
-	while (list)
+	while (s2 && *s2)
 	{
-		i = 0;
-		while (list->str_buf[i])
-		{
-			if (list->str_buf[i] == '\n')
-				return (len + 1);
-			i++;
-			len++;
-		}
-		list = list->next;
+		str[i++] = *s2;
+		s2++;
 	}
-	return (len);
-}
-
-/*Deallocate all nodes in the list and set head to NULL or to a new node*/
-void	dealloc(t_list **list, t_list *clean_node, char *buf)
-{
-	t_list	*tmp;
-
-	while (*list)
-	{
-		tmp = (*list)->next;
-		free((*list)->str_buf);
-		free(*list);
-		*list = tmp;
-	}
-	if (clean_node->str_buf[0])
-	{
-		*list = clean_node;
-	}
-	else
-	{
-		free(buf);
-		free(clean_node);
-	}
+	str[i] = '\0';
+	return (str);
 }

@@ -6,36 +6,35 @@
 /*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 12:47:25 by armgonza          #+#    #+#             */
-/*   Updated: 2023/12/06 12:47:30 by armgonza         ###   ########.fr       */
+/*   Updated: 2023/12/17 14:30:21 by armgonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
-# endif
-
-# include <fcntl.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct s_list
-{
-	char			*str_buf;
-	struct s_list	*next;
-}					t_list;
+//	MAX_FILES_OPENED is the locked-in-memory size
+//	obtained through the command "ulimit -a"
+# ifndef MAX_FILES_OPENED
+#  define MAX_FILES_OPENED 65536
+# endif
 
-int					found_newline(t_list *list);
-t_list				*find_last_node(t_list *list);
-char				*get_theline(t_list *list);
-void				copy_str(t_list *list, char *str);
-int					len_to_newline(t_list *list);
-void				polish_list(t_list **list);
-char				*get_next_line(int fd);
-void				dealloc(t_list **list, t_list *clean_node, char *buf);
-void				create_list(t_list **list, int fd);
+//	Value can be changed at compile time
+//	by adding "-D BUFFER_SIZE=n" to the compiler call
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+//	get_next_line.c
+char	*get_next_line(int fd);
+
+//	get_next_line_utils.c
+void	ft_bzero(void *s, size_t n);
+size_t	ft_strlen(const char *str);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strjoin(char const *s1, char const *s2);
 
 #endif

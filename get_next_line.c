@@ -6,119 +6,109 @@
 /*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 12:36:40 by nate              #+#    #+#             */
-/*   Updated: 2023/12/06 12:49:54 by armgonza         ###   ########.fr       */
+/*   Updated: 2023/12/17 15:09:41 by armgonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h> // Include for read function
+#include "get_next_line.h"
 
-/*
- * Polish linked list for next call
- */
-void	polish_list(t_list **list)
+static int	read_buffer(int fd, char **stash, char *buffer)
 {
-	t_list	*last_node;
-	t_list	*clean_node;
-	int		i;
-	int		k;
-	char	*buf;
+	char	*tmp;
+	int		bytes;
 
-	buf = malloc(BUFFER_SIZE + 1);
-	clean_node = malloc(sizeof(t_list));
-	if (NULL == buf || NULL == clean_node)
+	ft_bzero(buffer, BUFFER_SIZE + 1);
+	bytes = read(fd, buffer, BUFFER_SIZE);
+	if (bytes < 0 || buffer == NULL)
+	{
+		free(*stash);
+		*stash = NULL;
+		return (-1);
+	}
+	if (bytes == 0)
+		return (bytes);
+	tmp = ft_strjoin(*stash, buffer);
+	free(*stash);
+	*stash = tmp;
+	return (bytes);
+}
+
+//	Removes the string obtained in get_result()
+//	from the stash.
+
+static void	remove_result(char **stash)
+{
+	char	*nl;
+	char	*tmp;
+	size_t	i;
+	size_t	j;
+
+	nl = ft_strchr(*stash, '\n');
+	if (!nl)
+	{
+		free(*stash);
+		*stash = NULL;
 		return ;
-	last_node = find_last_node(*list);
+	}
+	tmp = malloc((ft_strlen(nl)) * sizeof(char));
 	i = 0;
-	k = 0;
-	while (last_node->str_buf[i] && last_node->str_buf[i] != '\n')
-		++i;
-	while (last_node->str_buf[i] && last_node->str_buf[++i])
-		buf[k++] = last_node->str_buf[i];
-	buf[k] = '\0';
-	clean_node->str_buf = buf;
-	clean_node->next = NULL;
-	dealloc(list, clean_node, buf);
-}
-
-/*
- * Get my line (line\n)
- */
-char	*get_theline(t_list *list)
-{
-	int		str_len;
-	char	*next_str;
-
-	if (!list)
-		return (NULL);
-	str_len = len_to_newline(list);
-	next_str = malloc(str_len + 1);
-	if (!next_str)
-		return (NULL);
-	copy_str(list, next_str);
-	return (next_str);
-}
-
-/*
- * Append one node to the end of the list
- */
-void	append(t_list **list, char *buf)
-{
-	t_list	*new_node;
-	t_list	*last_node;
-
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
+	j = ft_strlen(*stash) - ft_strlen(nl) + 1;
+	while (j < ft_strlen(*stash))
+		tmp[i++] = (*stash)[j++];
+	tmp[i] = '\0';
+	free(*stash);
+	*stash = tmp;
+	if (**stash == 0)
 	{
-		free(buf);
+		free(*stash);
+		*stash = NULL;
+	}
+}
+
+//	Takes the string to return from the stash
+
+static void	get_result(char **stash, char **result)
+{
+	char	*nl;
+	size_t	len;
+	size_t	i;
+
+	nl = ft_strchr(*stash, '\n');
+	len = ft_strlen(*stash) - ft_strlen(nl) + 2;
+	*result = (char *)malloc(len * sizeof(char));
+	if (!result)
 		return ;
-	}
-	last_node = find_last_node(*list);
-	if (!last_node)
-		*list = new_node;
-	else
-		last_node->next = new_node;
-	new_node->str_buf = buf;
-	new_node->next = NULL;
-}
-
-void	create_list(t_list **list, int fd)
-{
-	int		char_read;
-	char	*buf;
-
-	while (!found_newline(*list))
+	i = 0;
+	while (i < len - 1)
 	{
-		buf = malloc(BUFFER_SIZE + 1);
-		if (!buf)
-			return ;
-		char_read = read(fd, buf, BUFFER_SIZE);
-		if (char_read <= 0)
-		{
-			free(buf);
-			return ;
-		}
-		buf[char_read] = '\0';
-		append(list, buf);
+		(*result)[i] = (*stash)[i];
+		i++;
 	}
+	(*result)[i] = '\0';
 }
 
-/*
- * Main function to get the next line from a file descriptor
- */
+//	get_next_line()
+
 char	*get_next_line(int fd)
 {
-	static t_list	*list = NULL;
-	char			*next_line;
+	static char	*stash;
+	char		*result;
+	char		*buffer;
+	int			bytes;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &next_line, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	create_list(&list, fd);
-	if (!list)
+	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	bytes = 1;
+	while (ft_strchr(stash, '\n') == NULL
+		&& bytes > 0)
+		bytes = read_buffer(fd, &stash, buffer);
+	free(buffer);
+	if (bytes == -1)
 		return (NULL);
-	next_line = get_theline(list);
-	polish_list(&list);
-	return (next_line);
+	if (ft_strlen(stash) == 0)
+		return (NULL);
+	get_result(&stash, &result);
+	remove_result(&stash);
+	return (result);
 }
