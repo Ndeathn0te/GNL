@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+         #
+#    By: armgonza <armgonza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/06 12:49:47 by armgonza          #+#    #+#              #
-#    Updated: 2023/12/06 12:49:51 by armgonza         ###   ########.fr        #
+#    Updated: 2023/12/17 17:01:34 by armgonza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
