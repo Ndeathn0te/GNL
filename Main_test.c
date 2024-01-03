@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Main_test.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: armgonza <armgonza@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/03 02:31:38 by armgonza          #+#    #+#             */
+/*   Updated: 2024/01/03 03:09:15 by armgonza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 #include <fcntl.h>  // Incluye las definiciones para el uso de 'open'
 #include <stdio.h>  // Incluye las definiciones para el uso de 'printf'
@@ -7,8 +19,8 @@
 // para testar: ./gnl_program GNL_TEXT.txt
 // para compilar con diferentes buffer_size:
 // gcc -Wall -Werror -Wextra-D BUFFER_SIZE=42 Main_test.c get_next_line_bonus.c get_next_line_utils_bonus.c -o gnl_test
-
 // Función para leer y mostrar el contenido de un archivo
+
 void	test_file_read(const char *filename)
 {
 	char	*line;
@@ -16,7 +28,7 @@ void	test_file_read(const char *filename)
 	int fd = open(filename, O_RDONLY); // Abre el archivo para lectura
 	if (fd < 0) // Verifica si el archivo se abrió correctamente
 	{
-		perror("Error al abrir el archivo");
+		perror("Error al abrir el archivo o archivo vacio");
 			// Imprime un mensaje de error si falla
 		return ;                              // Sale de la función
 	}
@@ -35,7 +47,7 @@ void	test_stdin_read(void)
 {
 	char	*line;
 
-	printf("Leyendo desde stdin (Ctrl-D para terminar):\n");
+	printf("Leyendo desde stdin (Ctrl-D para salir del programa):\n");
 	while ((line = get_next_line(STDIN_FILENO)) != NULL)
 	// Lee desde stdin línea por línea
 	{
@@ -48,8 +60,7 @@ void	test_stdin_read(void)
 int	main(int argc, char **argv)
 {
 	if (argc > 1)
-		test_file_read(argv[1]); // Si se proporciona un argumento,
-			lee de un archivo
+		test_file_read(argv[1]); // Si se proporciona un argumento,lee de un archivo
 	else
 		test_stdin_read(); // Si no, lee de stdin
 	return (0); // Finaliza el programa
